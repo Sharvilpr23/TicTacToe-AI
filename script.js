@@ -30,7 +30,7 @@ let board = [
 let currentPlayer = human;
 let isGameLive = true;
 let boardLength = 3; // Default boardLength set to 3
-let gameCounter = 0; // Counts the number of rounds
+let gameCounter = 1; // Counts the number of rounds
 
 /*
     Returns the token symbol corresponding to the player
@@ -66,6 +66,7 @@ const getAvailableSpots = () => {
 */
 const nextMove = () => {
     let bestScore = -Infinity;
+    let bestMoves = []
 
     // Return if no available spots 
     if(getAvailableSpots().length === 0) return;
@@ -79,14 +80,20 @@ const nextMove = () => {
                 let score = minimax(false, -Infinity, Infinity);
                 board[i][j] = '';
                 if(score > bestScore) {
-                    bestScore = score;
+                    bestScore = score;  
                     I = i;
                     J = j;
+                    bestMoves = []
+                    bestMoves.push((i * 3) + j)
+                } else
+                if(score == bestScore) {
+                    bestMoves.push((i * 3) + j)
                 }
             }
         }
     }
-    placeToken(((I * 3) + J), currentPlayer);
+    let move = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+    placeToken(move, currentPlayer);
 }
 
 /*
@@ -218,6 +225,8 @@ const handleReset = () => {
         }
     }
     currentPlayer = players[gameCounter++ % 2]
+    console.log(gameCounter)
+    console.log(currentPlayer)
     if(currentPlayer == ai) {
         setup();
     }
